@@ -1,23 +1,22 @@
 from sqlalchemy import create_engine, select, delete, update, insert
 from sqlalchemy import Table, Column, String, MetaData, Integer
 from flask_sqlalchemy import Model
+
+from conf import db
 from src.crawler.crawler import Zakonkz
 from src.models import News
 
 
 class CRUD:
 
-    def __init__(self, db):
+    def __init__(self):
         self.crawler = Zakonkz("https://www.zakon.kz/")
         self.conn = create_engine("postgresql+psycopg2://postgres:postgres@localhost/postgres", echo=False)
         self.meta = MetaData(self.conn)
         self.session = self.conn.connect()
 
-        self.news = News(db.Model)
+        self.news = News
         # self.password = Password
-        db.create_all()
-        db.session.commit()
-
 
     def insert_password(self):
         insert_statement = self.password.insert().values(password='123')
@@ -29,7 +28,6 @@ class CRUD:
         self.session.execute(data)
 
     def test_create(self):
-
         objects = self.crawler.loop()
         for object in objects:
             self.create(object)
